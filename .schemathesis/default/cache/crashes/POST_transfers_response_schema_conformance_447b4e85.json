@@ -1,0 +1,87 @@
+{
+  "operation": "POST /transfers",
+  "method": "POST",
+  "path_template": "/transfers",
+  "fingerprint": "447b4e85",
+  "case_id": "X53HN3",
+  "code_sample": "curl -X POST -H 'Idempotency-Key: [Filtered]' http://localhost:8000/transfers",
+  "sequence": [
+    {
+      "method": "POST",
+      "url": "http://localhost:8000/transfers",
+      "url_template": "http://localhost:8000/transfers",
+      "headers": {
+        "User-Agent": "schemathesis/4.32.4",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept": "*/*",
+        "Connection": "keep-alive",
+        "Idempotency-Key": "[Filtered]",
+        "X-Schemathesis-TestCaseId": "X53HN3",
+        "Content-Length": "0"
+      },
+      "response": {
+        "status_code": 422,
+        "headers": {
+          "date": "Fri, 23 Oct 2026 02:39:02 GMT",
+          "server": "uvicorn",
+          "content-length": "82",
+          "content-type": "application/json"
+        },
+        "body": "{\"detail\":[{\"type\":\"missing\",\"loc\":[\"body\"],\"msg\":\"Field required\",\"input\":null}]}"
+      },
+      "link": null,
+      "checks": [
+        {
+          "name": "response_schema_conformance",
+          "status": "failure",
+          "message": "Response violates schema\n\n[{\"input\":null,\"loc\":[\"body\"],\"msg\":\"Field required\",\"type\":\"missing\"}] is not of type \"string\"\n\nValidated against the response schema for status code 422.\n\nSchema at /properties/detail:\n\n    {\n        \"type\": \"string\",\n        \"title\": \"Detail\"\n    }\n\nValue:\n\n    [\n        {\n            \"input\": null,\n            \"loc\": [\n                \"body\"\n            ],\n            \"msg\": \"Field required\",\n            \"type\": \"missing\"\n        }\n    ]"
+        }
+      ],
+      "meta": {
+        "generation": {
+          "time": 1.4382999779627426e-05,
+          "mode": "negative"
+        },
+        "components": {
+          "HEADER": "positive",
+          "BODY": "negative"
+        },
+        "phase": {
+          "name": "coverage",
+          "data": {
+            "type": "CoveragePhaseData",
+            "description": "Missing request body",
+            "location": null,
+            "parameter": null,
+            "parameter_location": "BODY",
+            "scenario": "missing_parameter"
+          }
+        },
+        "pool_draws": [],
+        "pool_misses": [],
+        "semantic_draws": [],
+        "dictionary_draws": [],
+        "constants_draws": [],
+        "raw_containers": {
+          "HEADER": {
+            "idempotency-key": "00000000"
+          }
+        }
+      },
+      "path": "/transfers",
+      "path_parameters": {},
+      "query": {},
+      "case_headers": {
+        "Idempotency-Key": "[Filtered]"
+      },
+      "cookies": {},
+      "case_body": {
+        "encoding": "none"
+      },
+      "media_type": null,
+      "parent_index": null,
+      "auth_identity": null,
+      "operation": "POST /transfers"
+    }
+  ]
+}

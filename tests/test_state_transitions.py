@@ -96,3 +96,9 @@ class TestTransferTransitions:
 
     def test_reverse_unknown_transfer_404(self, ledger):
         assert ledger.reverse("no-such-transfer").status_code == 404
+
+
+def test_get_unknown_transfer_returns_404_with_code(client):
+    r = client.get("/transfers/no-such-transfer")
+    assert r.status_code == 404
+    assert r.json()["code"] == "TRANSFER_NOT_FOUND"

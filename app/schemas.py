@@ -2,13 +2,18 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field, model_validator
 
-from app.config import MAX_DEPOSIT_VND, MAX_TRANSFER_VND, MIN_TRANSFER_VND
+from app.config import MAX_DAILY_LIMIT_VND, MAX_DEPOSIT_VND, MAX_TRANSFER_VND, MIN_TRANSFER_VND
+
+# ids are UUIDs we generate; owner names are printable text. Rejecting control characters here keeps
+# NUL bytes (which Postgres cannot store) from ever reaching the database.
+ID_PATTERN = r"^[A-Za-z0-9-]{1,36}$"
+TEXT_PATTERN = r"^[^\x00-\x1f\x7f]+$"
 from app.models import AccountStatus, TransferStatus
 
 
 class AccountCreate(BaseModel):
-    owner: str = Field(min_length=1, max_length=100)
-    daily_limit: int | None = Field(default=None, ge=MIN_TRANSFER_VND)
+    owner: str = Field(min_length=1, max_length=100, pattern=TEXT_PATTERN)
+    daily_limit: int | None = Field(default=None, ge=MIN_TRANSFER_VND, le=MAX_DAILY_LIMIT_VND)
 
 
 class AccountOut(BaseModel):
@@ -27,8 +32,10 @@ class DepositIn(BaseModel):
 
 
 class TransferCreate(BaseModel):
-    source_id: str = Field(min_length=1, max_length=36)
-    target_id: str = Field(min_length=1, max_length=36)
+    """source_id and target_id must be different accounts (checked server-side, returns 422)."""
+
+    source_id: str = Field(pattern=ID_PATTERN)
+    target_id: str = Field(pattern=ID_PATTERN)
     amount: int = Field(ge=MIN_TRANSFER_VND, le=MAX_TRANSFER_VND)
 
     @model_validator(mode="after")
@@ -51,7 +58,13 @@ class TransferOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
+class FieldError(BaseModel):
+    field: str
+    message: str
+
+
 class ErrorOut(BaseModel):
     code: str
     detail: str
     transfer_id: str | None = None
+    errors: list[FieldError] | None = None

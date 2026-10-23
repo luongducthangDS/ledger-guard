@@ -1,0 +1,270 @@
+Schemathesis v4.32.4
+━━━━━━━━━━━━━━━━━━━━
+
+ ✅  Loaded specification from http://localhost:8000/openapi.json (in 0.33s)
+
+     Base URL:         http://localhost:8000/
+     Specification:    Open API 3.1.0
+     Operations:       10 selected / 10 total
+
+ ✅  API capabilities:
+
+     Supports NULL byte in headers:                            ✘
+     Accepts backslash and control characters in URL paths:    ✓
+
+ ⏭   Examples (in 0.01s)
+
+     ⏭  10 skipped
+
+ ❌  Coverage (in 0.63s)
+
+     ✅  8 passed  ❌  2 failed
+
+ ❌  Fuzzing (in 8.81s)
+
+     ✅  7 passed  ❌  3 failed
+
+ ❌  Stateful (in 2.57s)
+
+     Scenarios:    37
+     API Links:    15 covered / 31 selected / 31 total (31 inferred)
+
+     ✅ 34 passed  ❌ 3 failed
+
+=================================== FAILURES ===================================
+________________________________ POST /accounts ________________________________
+1. Test Case ID: 5RNSIH
+
+- ST103 Undocumented status code
+
+    Received: 400
+    Documented: 201, 422
+
+[400] Bad Request:
+
+    `{"detail":"There was an error parsing the body"}`
+
+Reproduce with:
+
+    curl -X POST -H 'Idempotency-Key: [Filtered]' -H 'Content-Type: application/json' -d '�' http://localhost:8000/accounts
+
+    st replay 5RNSIH
+
+_____________________ POST /accounts/{account_id}/deposits _____________________
+1. Test Case ID: L2LXKk
+
+- ST108 Response violates schema (2 violations)
+
+    "code" is a required property
+
+    Validated against the response schema for status code 422.
+
+    Schema:
+
+        {
+            "required": [
+                "code",
+                "detail"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "title": "Code"
+                },
+                "detail": {
+                    "type": "string",
+                    "title": "Detail"
+                },
+                "transfer_id": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+            // Output truncated...
+        }
+
+    Value:
+
+        {
+            "detail": [
+                {
+                    "input": null,
+                    "loc": [
+                        "body"
+                    ],
+                    "msg": "Field required",
+                    "type": "missing"
+                }
+            ]
+        }
+
+    [{"input":null,"loc":["body"],"msg":"Field required","type":"missing"}] is not of type "string"
+
+    Validated against the response schema for status code 422.
+
+    Schema at /properties/detail:
+
+        {
+            "type": "string",
+            "title": "Detail"
+        }
+
+    Value:
+
+        [
+            {
+                "input": null,
+                "loc": [
+                    "body"
+                ],
+                "msg": "Field required",
+                "type": "missing"
+            }
+        ]
+
+[422] Unprocessable Content:
+
+    `{"detail":[{"type":"missing","loc":["body"],"msg":"Field required","input":null}]}`
+
+Reproduce with:
+
+    curl -X POST -H 'Idempotency-Key: [Filtered]' http://localhost:8000/accounts/92faab70-213d-46e0-ad1b-8d991e07d809/deposits
+
+    st replay L2LXKk
+
+_______________________________ POST /transfers ________________________________
+1. Test Case ID: X53HN3
+
+- ST108 Response violates schema (2 violations)
+
+    "code" is a required property
+
+    Validated against the response schema for status code 422.
+
+    Schema:
+
+        {
+            "required": [
+                "code",
+                "detail"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "title": "Code"
+                },
+                "detail": {
+                    "type": "string",
+                    "title": "Detail"
+                },
+                "transfer_id": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+            // Output truncated...
+        }
+
+    Value:
+
+        {
+            "detail": [
+                {
+                    "input": null,
+                    "loc": [
+                        "body"
+                    ],
+                    "msg": "Field required",
+                    "type": "missing"
+                }
+            ]
+        }
+
+    [{"input":null,"loc":["body"],"msg":"Field required","type":"missing"}] is not of type "string"
+
+    Validated against the response schema for status code 422.
+
+    Schema at /properties/detail:
+
+        {
+            "type": "string",
+            "title": "Detail"
+        }
+
+    Value:
+
+        [
+            {
+                "input": null,
+                "loc": [
+                    "body"
+                ],
+                "msg": "Field required",
+                "type": "missing"
+            }
+        ]
+
+[422] Unprocessable Content:
+
+    `{"detail":[{"type":"missing","loc":["body"],"msg":"Field required","input":null}]}`
+
+Reproduce with:
+
+    curl -X POST -H 'Idempotency-Key: [Filtered]' http://localhost:8000/transfers
+
+    st replay X53HN3
+
+2. Test Case ID: I5W4CQ
+
+- ST202 Schema-valid request rejected
+
+    Valid data should have been accepted
+    Expected: 2xx, 3xx, 401, 403, 404, 409, 429, 5xx
+
+[422] Unprocessable Content:
+
+    `{"detail":[{"type":"value_error","loc":["body"],"msg":"Value error, source_id and target_id must differ","input":{"amount":10000,"source_id":"0","target_id":"0"},"ctx":{"error":{}}}]}`
+
+Reproduce with:
+
+    curl -X POST -H 'Idempotency-Key: [Filtered]' -H 'Content-Type: application/json' -d '{"amount": 10000, "source_id": "0", "target_id": "0"}' http://localhost:8000/transfers
+
+    st replay I5W4CQ
+
+=================================== WARNINGS ===================================
+
+Missing test data: 2 operations repeatedly returned 404 Not Found, preventing tests from reaching your API's core logic
+
+  - GET /transfers/{transfer_id}
+  - POST /transfers/{transfer_id}/reverse
+
+💡 Add a link from POST /transfers, or supply the identifiers it returns in your config file
+
+=================================== SUMMARY ====================================
+
+API Operations:
+  Selected: 10/10
+  Tested: 10
+
+Test Phases:
+  ⏭  Examples
+  ❌ Coverage
+  ❌ Fuzzing
+  ❌ Stateful
+
+Failures:
+  ❌ ST108 Response violates schema: 4
+  ❌ ST202 Schema-valid request rejected: 1
+  ❌ ST103 Undocumented status code: 1
+
+For more information, run `st explain <code>` for ST103, ST108, ST202.
+
+Warnings:
+  ⚠️ Missing test data: 2 operations repeatedly returned 404 responses
+
+Test cases:
+  911 generated, 4 found 6 unique failures
+
+Seed: 101262971570070975880595228006013053219
+
+======================= 6 failures, 1 warning in 12.11s ========================

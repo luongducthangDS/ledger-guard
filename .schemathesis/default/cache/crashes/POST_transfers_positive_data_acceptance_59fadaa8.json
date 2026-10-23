@@ -1,0 +1,102 @@
+{
+  "operation": "POST /transfers",
+  "method": "POST",
+  "path_template": "/transfers",
+  "fingerprint": "59fadaa8",
+  "case_id": "gSuiuv",
+  "code_sample": "curl -X POST -H 'Idempotency-Key: [Filtered]' -H 'Content-Type: application/json' -d '{\"source_id\": \"0\", \"target_id\": \"0\", \"amount\": 10000}' http://localhost:8000/transfers",
+  "sequence": [
+    {
+      "method": "POST",
+      "url": "http://localhost:8000/transfers",
+      "url_template": "http://localhost:8000/transfers",
+      "headers": {
+        "User-Agent": "schemathesis/4.32.4",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept": "*/*",
+        "Connection": "keep-alive",
+        "Idempotency-Key": "[Filtered]",
+        "X-Schemathesis-TestCaseId": "gSuiuv",
+        "Content-Type": "application/json",
+        "Content-Length": "53"
+      },
+      "response": {
+        "status_code": 422,
+        "headers": {
+          "date": "Fri, 23 Oct 2026 02:42:36 GMT",
+          "server": "uvicorn",
+          "content-length": "153",
+          "content-type": "application/json"
+        },
+        "body": "{\"code\":\"VALIDATION_ERROR\",\"detail\":\"request validation failed\",\"errors\":[{\"field\":\"body\",\"message\":\"Value error, source_id and target_id must differ\"}]}"
+      },
+      "link": null,
+      "checks": [
+        {
+          "name": "positive_data_acceptance",
+          "status": "failure",
+          "message": "Schema-valid request rejected\n\nValid data should have been accepted\nExpected: 2xx, 3xx, 401, 403, 404, 409, 429, 5xx"
+        }
+      ],
+      "meta": {
+        "generation": {
+          "time": 0.0024526440001864103,
+          "mode": "positive"
+        },
+        "components": {
+          "HEADER": "positive",
+          "BODY": "positive"
+        },
+        "phase": {
+          "name": "coverage",
+          "data": {
+            "type": "CoveragePhaseData",
+            "description": "Near-boundary length string",
+            "location": null,
+            "parameter": "idempotency-key",
+            "parameter_location": "HEADER",
+            "scenario": "near_boundary_length_string"
+          }
+        },
+        "pool_draws": [],
+        "pool_misses": [
+          [
+            "body",
+            "source_id"
+          ],
+          [
+            "body",
+            "target_id"
+          ]
+        ],
+        "semantic_draws": [],
+        "dictionary_draws": [],
+        "constants_draws": [],
+        "raw_containers": {
+          "HEADER": {
+            "idempotency-key": "000000000000000000000000000000000000000000000000000000000000000"
+          }
+        }
+      },
+      "path": "/transfers",
+      "path_parameters": {},
+      "query": {},
+      "case_headers": {
+        "Idempotency-Key": "[Filtered]"
+      },
+      "cookies": {},
+      "case_body": {
+        "encoding": "json",
+        "value": {
+          "source_id": "0",
+          "target_id": "0",
+          "amount": 10000
+        }
+      },
+      "media_type": "application/json",
+      "parent_index": null,
+      "auth_identity": null,
+      "operation": "POST /transfers"
+    }
+  ]
+}

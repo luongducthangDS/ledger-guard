@@ -1,0 +1,5 @@
+final (v1.0 code, full suite incl. concurrency excluded from mutmut runs)
+mutants total: 317
+killed: 313
+survived: 4 (all only change human-readable error message text, which tests intentionally do not assert)
+mutation score: 98.7%

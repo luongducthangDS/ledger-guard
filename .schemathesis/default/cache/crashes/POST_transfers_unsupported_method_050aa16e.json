@@ -1,0 +1,102 @@
+{
+  "operation": "POST /transfers",
+  "method": "TRACE",
+  "path_template": "/transfers",
+  "fingerprint": "050aa16e",
+  "case_id": "kJNb7U",
+  "code_sample": "curl -X TRACE -H 'Idempotency-Key: [Filtered]' -H 'Content-Type: application/json' -d '{\"source_id\": \"0\", \"target_id\": \"0\", \"amount\": 10000}' http://localhost:8000/transfers",
+  "sequence": [
+    {
+      "method": "TRACE",
+      "url": "http://localhost:8000/transfers",
+      "url_template": "http://localhost:8000/transfers",
+      "headers": {
+        "User-Agent": "schemathesis/4.32.4",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept": "*/*",
+        "Connection": "keep-alive",
+        "Idempotency-Key": "[Filtered]",
+        "X-Schemathesis-TestCaseId": "kJNb7U",
+        "Content-Type": "application/json",
+        "Content-Length": "53"
+      },
+      "response": {
+        "status_code": 405,
+        "headers": {
+          "date": "Fri, 23 Oct 2026 02:42:04 GMT",
+          "server": "uvicorn",
+          "content-length": "49",
+          "content-type": "application/json"
+        },
+        "body": "{\"code\":\"HTTP_405\",\"detail\":\"Method Not Allowed\"}"
+      },
+      "link": null,
+      "checks": [
+        {
+          "name": "unsupported_method",
+          "status": "failure",
+          "message": "Wrong response to undeclared method\n\nTRACE returned 405 without required `Allow` header\n\nAdd `Allow` header listing supported methods (required by RFC 9110)"
+        }
+      ],
+      "meta": {
+        "generation": {
+          "time": 7.048000043141656e-06,
+          "mode": "negative"
+        },
+        "components": {
+          "HEADER": "positive",
+          "BODY": "positive"
+        },
+        "phase": {
+          "name": "coverage",
+          "data": {
+            "type": "CoveragePhaseData",
+            "description": "Unspecified HTTP method: TRACE",
+            "location": null,
+            "parameter": null,
+            "parameter_location": null,
+            "scenario": "unspecified_http_method"
+          }
+        },
+        "pool_draws": [],
+        "pool_misses": [
+          [
+            "body",
+            "source_id"
+          ],
+          [
+            "body",
+            "target_id"
+          ]
+        ],
+        "semantic_draws": [],
+        "dictionary_draws": [],
+        "constants_draws": [],
+        "raw_containers": {
+          "HEADER": {
+            "idempotency-key": "00000000"
+          }
+        }
+      },
+      "path": "/transfers",
+      "path_parameters": {},
+      "query": {},
+      "case_headers": {
+        "Idempotency-Key": "[Filtered]"
+      },
+      "cookies": {},
+      "case_body": {
+        "encoding": "json",
+        "value": {
+          "source_id": "0",
+          "target_id": "0",
+          "amount": 10000
+        }
+      },
+      "media_type": "application/json",
+      "parent_index": null,
+      "auth_identity": null,
+      "operation": "POST /transfers"
+    }
+  ]
+}

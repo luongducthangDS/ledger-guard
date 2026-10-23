@@ -1,0 +1,87 @@
+Schemathesis v4.32.4
+━━━━━━━━━━━━━━━━━━━━
+
+ ✅  Loaded specification from http://localhost:8000/openapi.json (in 0.32s)
+
+     Base URL:         http://localhost:8000/
+     Specification:    Open API 3.1.0
+     Operations:       10 selected / 10 total
+
+ ✅  API capabilities:
+
+     Supports NULL byte in headers:                            ✘
+     Accepts backslash and control characters in URL paths:    ✓
+
+ ⏭   Examples (in 0.01s)
+
+     ⏭  10 skipped
+
+ ❌  Coverage (in 1.03s)
+
+     ✅  9 passed  ❌  1 failed
+
+ ❌  Fuzzing (in 14.66s)
+
+     ✅  9 passed  ❌  1 failed
+
+ ✅  Stateful (in 9.81s)
+
+     Scenarios:    112
+     API Links:    5 covered / 31 selected / 31 total (31 inferred)
+
+     ✅ 112 passed
+
+=================================== FAILURES ===================================
+_______________________________ POST /transfers ________________________________
+1. Test Case ID: gSuiuv
+
+- ST202 Schema-valid request rejected
+
+    Valid data should have been accepted
+    Expected: 2xx, 3xx, 401, 403, 404, 409, 429, 5xx
+
+[422] Unprocessable Content:
+
+    `{"code":"VALIDATION_ERROR","detail":"request validation failed","errors":[{"field":"body","message":"Value error, source_id and target_id must differ"}]}`
+
+Reproduce with:
+
+    curl -X POST -H 'Idempotency-Key: [Filtered]' -H 'Content-Type: application/json' -d '{"source_id": "0", "target_id": "0", "amount": 10000}' http://localhost:8000/transfers
+
+    st replay gSuiuv
+
+=================================== WARNINGS ===================================
+
+Missing test data: 2 operations repeatedly returned 404 Not Found, preventing tests from reaching your API's core logic
+
+  - GET /transfers/{transfer_id}
+  - POST /transfers/{transfer_id}/reverse
+
+💡 Add a link from POST /transfers, or supply the identifiers it returns in your config file
+
+=================================== SUMMARY ====================================
+
+API Operations:
+  Selected: 10/10
+  Tested: 10
+
+Test Phases:
+  ⏭  Examples
+  ❌ Coverage
+  ❌ Fuzzing
+  ✅ Stateful
+
+Failures:
+  ❌ ST202 Schema-valid request rejected: 1
+
+For more information, run `st explain ST202`.
+
+Warnings:
+  ⚠️ Missing test data: 2 operations repeatedly returned 404 responses
+
+Test cases:
+  1562 generated, 1 found 1 unique failure
+
+Seed: 97089418127461347841383870956326955502
+
+======================== 1 failure, 1 warning in 25.65s ========================

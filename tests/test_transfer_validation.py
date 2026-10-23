@@ -79,3 +79,39 @@ def test_deposit_boundaries(client, ledger, amount, expected):
     a = ledger.open_account()
     r = client.post(f"/accounts/{a['id']}/deposits", json={"amount": amount})
     assert r.status_code == expected
+
+
+# --- regressions for defects found by Schemathesis fuzzing -------------------------------------
+
+@pytest.mark.parametrize("bad_id", ["g\x008", "a\x00", "../etc", "x" * 37])
+def test_malformed_account_ids_are_422_not_500(ledger, bad_id):
+    a = ledger.open_account(balance=100_000)
+    r = ledger.transfer(bad_id, a["id"], 10_000)
+    assert r.status_code == 422
+    assert r.json()["code"] == "VALIDATION_ERROR"
+
+
+@pytest.mark.parametrize("owner", ["nul\x00byte", "tab\tname", ""])
+def test_owner_with_control_characters_rejected(client, owner):
+    r = client.post("/accounts", json={"owner": owner})
+    assert r.status_code == 422
+
+
+def test_daily_limit_above_max_is_422_not_bigint_overflow(client):
+    r = client.post("/accounts", json={"owner": "x", "daily_limit": 10**19})
+    assert r.status_code == 422
+
+
+def test_validation_errors_follow_the_documented_error_contract(client):
+    r = client.post("/transfers", json={}, headers={"Idempotency-Key": "contract-check-1"})
+    body = r.json()
+    assert r.status_code == 422
+    assert set(body) >= {"code", "detail", "errors"}
+    assert isinstance(body["detail"], str)
+    assert {e["field"] for e in body["errors"]} >= {"body.source_id", "body.target_id", "body.amount"}
+
+
+def test_invalid_json_body_is_a_documented_client_error(client):
+    r = client.post("/accounts", content=b"\xff", headers={"Content-Type": "application/json"})
+    assert r.status_code in (400, 422)
+    assert set(r.json()) >= {"code", "detail"}

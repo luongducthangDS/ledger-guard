@@ -1,0 +1,89 @@
+{
+  "operation": "POST /transfers",
+  "method": "POST",
+  "path_template": "/transfers",
+  "fingerprint": "50878cd4",
+  "case_id": "ZbEL4A",
+  "code_sample": "curl -X POST -H 'Idempotency-Key: [Filtered]' -H 'Content-Type: application/json' -d '{\"\\u0012\\u00e9\\n\\u00c1\\u00fdq\\uda5c\\ude6d\": \"L\\t\\u00e3\\u0013\\udaef\\udf6d\\u00e1\\ud97d\\udc6a\\t\\u0088\", \"source_id\": \"g\\u00008\", \"target_id\": \"\\ud87f\\udfd3R\", \"amount\": 44460.0}' http://localhost:8000/transfers",
+  "sequence": [
+    {
+      "method": "POST",
+      "url": "http://localhost:8000/transfers",
+      "url_template": "http://localhost:8000/transfers",
+      "headers": {
+        "User-Agent": "schemathesis/4.32.4",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept": "*/*",
+        "Connection": "keep-alive",
+        "Idempotency-Key": "[Filtered]",
+        "X-Schemathesis-TestCaseId": "ZbEL4A",
+        "Content-Type": "application/json",
+        "Content-Length": "174"
+      },
+      "response": {
+        "status_code": 500,
+        "headers": {
+          "date": "Fri, 23 Oct 2026 02:38:50 GMT",
+          "server": "uvicorn",
+          "content-length": "21",
+          "content-type": "text/plain; charset=utf-8"
+        },
+        "body": "Internal Server Error"
+      },
+      "link": null,
+      "checks": [
+        {
+          "name": "status_code_conformance",
+          "status": "failure",
+          "message": "Undocumented status code\n\nReceived: 500\nDocumented: 201, 409, 404, 422"
+        }
+      ],
+      "meta": {
+        "generation": {
+          "time": 0.002963474999887694,
+          "mode": "positive"
+        },
+        "components": {
+          "BODY": "positive"
+        },
+        "phase": {
+          "name": "stateful",
+          "data": {
+            "type": "StatefulPhaseData",
+            "description": "Positive test case",
+            "location": null,
+            "parameter": null,
+            "parameter_location": null,
+            "mutations": []
+          }
+        },
+        "pool_draws": [],
+        "pool_misses": [],
+        "semantic_draws": [],
+        "dictionary_draws": [],
+        "constants_draws": [],
+        "raw_containers": {}
+      },
+      "path": "/transfers",
+      "path_parameters": {},
+      "query": {},
+      "case_headers": {
+        "Idempotency-Key": "[Filtered]"
+      },
+      "cookies": {},
+      "case_body": {
+        "encoding": "json",
+        "value": {
+          "\u0012\u00e9\n\u00c1\u00fdq\uda5c\ude6d": "L\t\u00e3\u0013\udaef\udf6d\u00e1\ud97d\udc6a\t\u0088",
+          "source_id": "g\u00008",
+          "target_id": "\ud87f\udfd3R",
+          "amount": 44460.0
+        }
+      },
+      "media_type": "application/json",
+      "parent_index": null,
+      "auth_identity": null,
+      "operation": "POST /transfers"
+    }
+  ]
+}
