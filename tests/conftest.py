@@ -5,12 +5,12 @@ os.environ.setdefault(
     "DATABASE_URL", "postgresql+psycopg://postgres:postgres@localhost:5432/ledger_test"
 )
 
-import pytest  # noqa: E402
-from fastapi.testclient import TestClient  # noqa: E402
-from sqlalchemy import text  # noqa: E402
+import pytest
+from fastapi.testclient import TestClient
+from sqlalchemy import text
 
-from app.db import Base, engine  # noqa: E402
-from app.main import app  # noqa: E402
+from app.db import Base, engine
+from app.main import app
 
 
 @pytest.fixture(scope="session", autouse=True)

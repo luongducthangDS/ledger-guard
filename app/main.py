@@ -1,12 +1,11 @@
 from contextlib import asynccontextmanager
-
 from typing import Annotated
 
 from fastapi import Depends, FastAPI, Header, Path, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from starlette.exceptions import HTTPException as StarletteHTTPException
 from sqlalchemy.orm import Session
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app import services
 from app.db import Base, engine, get_session
