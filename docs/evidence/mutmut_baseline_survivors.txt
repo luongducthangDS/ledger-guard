@@ -1,0 +1,133 @@
+    app.services.xǁDomainErrorǁ__init____mutmut_2: survived
+    app.services.xǁDomainErrorǁ__init____mutmut_4: survived
+    app.services.x__get_account__mutmut_13: survived
+    app.services.x_deposit__mutmut_8: survived
+    app.services.x_deposit__mutmut_10: survived
+    app.services.x_deposit__mutmut_11: survived
+    app.services.x_deposit__mutmut_12: survived
+    app.services.x_set_status__mutmut_1: no tests
+    app.services.x_set_status__mutmut_2: no tests
+    app.services.x_set_status__mutmut_3: no tests
+    app.services.x_set_status__mutmut_4: no tests
+    app.services.x_set_status__mutmut_5: no tests
+    app.services.x_set_status__mutmut_6: no tests
+    app.services.x_set_status__mutmut_7: no tests
+    app.services.x_set_status__mutmut_8: no tests
+    app.services.x_set_status__mutmut_9: no tests
+    app.services.x_set_status__mutmut_10: no tests
+    app.services.x_set_status__mutmut_11: no tests
+    app.services.x_set_status__mutmut_12: no tests
+    app.services.x_set_status__mutmut_13: no tests
+    app.services.x_set_status__mutmut_14: no tests
+    app.services.x_set_status__mutmut_15: no tests
+    app.services.x_set_status__mutmut_16: no tests
+    app.services.x_set_status__mutmut_17: no tests
+    app.services.x_set_status__mutmut_18: no tests
+    app.services.x_set_status__mutmut_19: no tests
+    app.services.x_set_status__mutmut_20: no tests
+    app.services.x_set_status__mutmut_21: no tests
+    app.services.x_set_status__mutmut_22: no tests
+    app.services.x_set_status__mutmut_23: no tests
+    app.services.x_set_status__mutmut_24: no tests
+    app.services.x_set_status__mutmut_25: no tests
+    app.services.x_set_status__mutmut_26: no tests
+    app.services.x__sent_today__mutmut_4: survived
+    app.services.x__sent_today__mutmut_7: survived
+    app.services.x__sent_today__mutmut_12: survived
+    app.services.x__sent_today__mutmut_13: survived
+    app.services.x__sent_today__mutmut_16: survived
+    app.services.x__sent_today__mutmut_24: survived
+    app.services.x__sent_today__mutmut_26: survived
+    app.services.x__fail__mutmut_5: survived
+    app.services.x__fail__mutmut_7: survived
+    app.services.x__fail__mutmut_11: survived
+    app.services.x_create_transfer__mutmut_1: survived
+    app.services.x_create_transfer__mutmut_3: survived
+    app.services.x_create_transfer__mutmut_5: survived
+    app.services.x_create_transfer__mutmut_7: survived
+    app.services.x_create_transfer__mutmut_8: survived
+    app.services.x_create_transfer__mutmut_9: survived
+    app.services.x_create_transfer__mutmut_11: survived
+    app.services.x_create_transfer__mutmut_13: survived
+    app.services.x_create_transfer__mutmut_15: survived
+    app.services.x_create_transfer__mutmut_17: survived
+    app.services.x_create_transfer__mutmut_19: survived
+    app.services.x_create_transfer__mutmut_21: survived
+    app.services.x_create_transfer__mutmut_43: survived
+    app.services.x_create_transfer__mutmut_45: survived
+    app.services.x_create_transfer__mutmut_46: survived
+    app.services.x_create_transfer__mutmut_47: survived
+    app.services.x_create_transfer__mutmut_48: survived
+    app.services.x_create_transfer__mutmut_49: survived
+    app.services.x_create_transfer__mutmut_51: survived
+    app.services.x_create_transfer__mutmut_53: survived
+    app.services.x_create_transfer__mutmut_54: survived
+    app.services.x_create_transfer__mutmut_55: survived
+    app.services.x_create_transfer__mutmut_56: survived
+    app.services.x_create_transfer__mutmut_57: survived
+    app.services.x_create_transfer__mutmut_58: survived
+    app.services.x_create_transfer__mutmut_59: survived
+    app.services.x_create_transfer__mutmut_60: survived
+    app.services.x_create_transfer__mutmut_61: survived
+    app.services.x_create_transfer__mutmut_62: survived
+    app.services.x_create_transfer__mutmut_74: survived
+    app.services.x_create_transfer__mutmut_76: survived
+    app.services.x_create_transfer__mutmut_78: survived
+    app.services.x_create_transfer__mutmut_82: survived
+    app.services.x_create_transfer__mutmut_84: survived
+    app.services.x_create_transfer__mutmut_86: survived
+    app.services.x_create_transfer__mutmut_88: survived
+    app.services.x_create_transfer__mutmut_90: survived
+    app.services.x_create_transfer__mutmut_92: survived
+    app.services.x_create_transfer__mutmut_96: survived
+    app.services.x_get_transfer__mutmut_1: no tests
+    app.services.x_get_transfer__mutmut_2: no tests
+    app.services.x_get_transfer__mutmut_3: no tests
+    app.services.x_get_transfer__mutmut_4: no tests
+    app.services.x_get_transfer__mutmut_5: no tests
+    app.services.x_get_transfer__mutmut_6: no tests
+    app.services.x_get_transfer__mutmut_7: no tests
+    app.services.x_get_transfer__mutmut_8: no tests
+    app.services.x_get_transfer__mutmut_9: no tests
+    app.services.x_get_transfer__mutmut_10: no tests
+    app.services.x_get_transfer__mutmut_11: no tests
+    app.services.x_get_transfer__mutmut_12: no tests
+    app.services.x_get_transfer__mutmut_13: no tests
+    app.services.x_get_transfer__mutmut_14: no tests
+    app.services.x_get_transfer__mutmut_15: no tests
+    app.services.x_reverse_transfer__mutmut_1: no tests
+    app.services.x_reverse_transfer__mutmut_2: no tests
+    app.services.x_reverse_transfer__mutmut_3: no tests
+    app.services.x_reverse_transfer__mutmut_4: no tests
+    app.services.x_reverse_transfer__mutmut_5: no tests
+    app.services.x_reverse_transfer__mutmut_6: no tests
+    app.services.x_reverse_transfer__mutmut_7: no tests
+    app.services.x_reverse_transfer__mutmut_8: no tests
+    app.services.x_reverse_transfer__mutmut_9: no tests
+    app.services.x_reverse_transfer__mutmut_10: no tests
+    app.services.x_reverse_transfer__mutmut_11: no tests
+    app.services.x_reverse_transfer__mutmut_12: no tests
+    app.services.x_reverse_transfer__mutmut_13: no tests
+    app.services.x_reverse_transfer__mutmut_14: no tests
+    app.services.x_reverse_transfer__mutmut_15: no tests
+    app.services.x_reverse_transfer__mutmut_16: no tests
+    app.services.x_reverse_transfer__mutmut_17: no tests
+    app.services.x_reverse_transfer__mutmut_18: no tests
+    app.services.x_reverse_transfer__mutmut_19: no tests
+    app.services.x_reverse_transfer__mutmut_20: no tests
+    app.services.x_reverse_transfer__mutmut_21: no tests
+    app.services.x_reverse_transfer__mutmut_22: no tests
+    app.services.x_reverse_transfer__mutmut_23: no tests
+    app.services.x_reverse_transfer__mutmut_24: no tests
+    app.services.x_reverse_transfer__mutmut_25: no tests
+    app.services.x_reverse_transfer__mutmut_26: no tests
+    app.services.x_reverse_transfer__mutmut_27: no tests
+    app.services.x_reverse_transfer__mutmut_28: no tests
+    app.services.x_reverse_transfer__mutmut_29: no tests
+    app.services.x_reverse_transfer__mutmut_30: no tests
+    app.services.x_reverse_transfer__mutmut_31: no tests
+    app.services.x_reverse_transfer__mutmut_32: no tests
+    app.services.x_reverse_transfer__mutmut_33: no tests
+    app.services.x_reverse_transfer__mutmut_34: no tests
+    app.services.x_reverse_transfer__mutmut_35: no tests
+    app.services.x_reverse_transfer__mutmut_36: no tests

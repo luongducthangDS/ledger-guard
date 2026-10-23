@@ -1,0 +1,6 @@
+baseline (6 happy-path tests), commit bc67c21
+mutants total: 256
+killed: 123
+survived: 56
+no tests (code never executed): 77
+mutation score: 48.0%
