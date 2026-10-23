@@ -1,0 +1,14 @@
+E   AssertionError: [201, 201, 201, 201, 201, 201, ...]
+E   AssertionError: assert 30000 == (20 * 10000)
+E   AssertionError: 4 transfers created for one key
+E   AssertionError: [201, 201, 201, 201, 201, 201, ...]
+E   AssertionError: [200, 200, 409, 200, 200, 200, ...]
+E   AssertionError: 409 response does not expose the id of the stored FAILED transfer
+FAILED tests/test_concurrency.py::test_no_double_spend_under_parallel_transfers
+FAILED tests/test_concurrency.py::test_no_lost_update_when_many_senders_pay_one_account
+FAILED tests/test_concurrency.py::test_retry_storm_with_same_idempotency_key_creates_one_transfer
+FAILED tests/test_concurrency.py::test_daily_limit_holds_under_parallel_transfers
+FAILED tests/test_concurrency.py::test_parallel_reversal_happens_once - Asser...
+FAILED tests/test_state_transitions.py::TestTransferTransitions::test_failed_transfer_cannot_be_reversed
+FAILED tests/test_transfer_rules.py::TestIdempotency::test_replay_of_failed_transfer_returns_the_same_failure
+7 failed, 71 passed in 64.35s (0:01:04)

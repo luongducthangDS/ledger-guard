@@ -23,7 +23,10 @@ ERRORS = {409: {"model": ErrorOut}, 404: {"model": ErrorOut}, 422: {"model": Err
 
 @app.exception_handler(services.DomainError)
 def domain_error_handler(_: Request, exc: services.DomainError) -> JSONResponse:
-    return JSONResponse(status_code=exc.http_status, content={"code": exc.code, "detail": exc.detail})
+    body = {"code": exc.code, "detail": exc.detail}
+    if exc.transfer is not None:  # rejected transfers are persisted; give the client their id
+        body["transfer_id"] = exc.transfer.id
+    return JSONResponse(status_code=exc.http_status, content=body)
 
 
 @app.get("/health")

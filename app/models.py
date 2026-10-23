@@ -44,7 +44,7 @@ class Transfer(Base):
     __tablename__ = "transfers"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=_uuid)
-    idempotency_key: Mapped[str] = mapped_column(String(64))
+    idempotency_key: Mapped[str] = mapped_column(String(64), unique=True)
     source_id: Mapped[str] = mapped_column(ForeignKey("accounts.id"))
     target_id: Mapped[str] = mapped_column(ForeignKey("accounts.id"))
     amount: Mapped[int] = mapped_column(BigInteger)

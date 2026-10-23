@@ -3,6 +3,7 @@ from datetime import datetime, time
 from zoneinfo import ZoneInfo
 
 from sqlalchemy import func, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.models import Account, AccountStatus, Transfer, TransferStatus
@@ -22,11 +23,19 @@ class DomainError(Exception):
         self.transfer = transfer
 
 
-def _get_account(session: Session, account_id: str) -> Account:
-    account = session.get(Account, account_id)
+def _get_account(session: Session, account_id: str, lock: bool = False) -> Account:
+    account = session.get(Account, account_id, with_for_update=lock)
     if account is None:
         raise DomainError("ACCOUNT_NOT_FOUND", f"account {account_id} not found", 404)
     return account
+
+
+def _lock_pair(session: Session, first_id: str, second_id: str) -> tuple[Account, Account]:
+    """Row-lock both accounts in a fixed (id) order so two opposite transfers cannot deadlock."""
+    locked = {}
+    for account_id in sorted({first_id, second_id}):
+        locked[account_id] = _get_account(session, account_id, lock=True)
+    return locked[first_id], locked[second_id]
 
 
 def create_account(session: Session, owner: str, daily_limit: int | None) -> Account:
@@ -39,7 +48,7 @@ def create_account(session: Session, owner: str, daily_limit: int | None) -> Acc
 
 
 def deposit(session: Session, account_id: str, amount: int) -> Account:
-    account = _get_account(session, account_id)
+    account = _get_account(session, account_id, lock=True)
     if account.status != AccountStatus.ACTIVE:
         raise DomainError("ACCOUNT_NOT_ACTIVE", f"account is {account.status.value}")
     account.balance += amount
@@ -48,7 +57,7 @@ def deposit(session: Session, account_id: str, amount: int) -> Account:
 
 
 def set_status(session: Session, account_id: str, new_status: AccountStatus) -> Account:
-    account = _get_account(session, account_id)
+    account = _get_account(session, account_id, lock=True)
     allowed = {
         AccountStatus.ACTIVE: {AccountStatus.FROZEN, AccountStatus.CLOSED},
         AccountStatus.FROZEN: {AccountStatus.ACTIVE, AccountStatus.CLOSED},
@@ -86,18 +95,36 @@ def _fail(session: Session, transfer: Transfer, code: str, detail: str) -> None:
     raise DomainError(code, detail, 409, transfer)
 
 
+def _replay(existing: Transfer, data: TransferCreate) -> Transfer:
+    same = (existing.source_id, existing.target_id, existing.amount) == (
+        data.source_id, data.target_id, data.amount)
+    if not same:
+        raise DomainError("IDEMPOTENCY_KEY_REUSED", "key already used with a different payload", 422)
+    if existing.status == TransferStatus.FAILED:  # a retry gets the same answer as the original
+        raise DomainError(existing.failure_reason, "original request was rejected", 409, existing)
+    return existing
+
+
+def _find_by_key(session: Session, idempotency_key: str) -> Transfer | None:
+    return session.scalar(select(Transfer).where(Transfer.idempotency_key == idempotency_key))
+
+
 def create_transfer(session: Session, data: TransferCreate, idempotency_key: str) -> tuple[Transfer, bool]:
     """Returns (transfer, replayed). replayed=True when the idempotency key was seen before."""
-    existing = session.scalar(select(Transfer).where(Transfer.idempotency_key == idempotency_key))
+    existing = _find_by_key(session, idempotency_key)
     if existing is not None:
-        same = (existing.source_id, existing.target_id, existing.amount) == (
-            data.source_id, data.target_id, data.amount)
-        if not same:
-            raise DomainError("IDEMPOTENCY_KEY_REUSED", "key already used with a different payload", 422)
-        return existing, True
+        return _replay(existing, data), True
 
-    source = _get_account(session, data.source_id)
-    target = _get_account(session, data.target_id)
+    try:
+        return _execute_transfer(session, data, idempotency_key), False
+    except IntegrityError:
+        # a parallel request with the same key committed first (unique index): replay its result
+        session.rollback()
+        return _replay(_find_by_key(session, idempotency_key), data), True
+
+
+def _execute_transfer(session: Session, data: TransferCreate, idempotency_key: str) -> Transfer:
+    source, target = _lock_pair(session, data.source_id, data.target_id)
 
     transfer = Transfer(idempotency_key=idempotency_key, source_id=source.id,
                         target_id=target.id, amount=data.amount)
@@ -108,6 +135,7 @@ def create_transfer(session: Session, data: TransferCreate, idempotency_key: str
         _fail(session, transfer, "TARGET_NOT_ACTIVE", f"target account is {target.status.value}")
     if source.balance < data.amount:
         _fail(session, transfer, "INSUFFICIENT_FUNDS", "balance lower than amount")
+    # the source row is locked, so concurrent transfers from it are serialised here
     if _sent_today(session, source.id) + data.amount > source.daily_limit:
         _fail(session, transfer, "DAILY_LIMIT_EXCEEDED", "daily outgoing limit exceeded")
 
@@ -116,7 +144,7 @@ def create_transfer(session: Session, data: TransferCreate, idempotency_key: str
     transfer.status = TransferStatus.COMPLETED
     session.add(transfer)
     session.commit()
-    return transfer, False
+    return transfer
 
 
 def get_transfer(session: Session, transfer_id: str) -> Transfer:
@@ -127,11 +155,12 @@ def get_transfer(session: Session, transfer_id: str) -> Transfer:
 
 
 def reverse_transfer(session: Session, transfer_id: str) -> Transfer:
-    transfer = get_transfer(session, transfer_id)
+    transfer = session.get(Transfer, transfer_id, with_for_update=True)  # one reversal at a time
+    if transfer is None:
+        raise DomainError("TRANSFER_NOT_FOUND", f"transfer {transfer_id} not found", 404)
     if transfer.status != TransferStatus.COMPLETED:
         raise DomainError("INVALID_STATUS_TRANSITION", f"cannot reverse a {transfer.status.value} transfer")
-    source = _get_account(session, transfer.source_id)
-    target = _get_account(session, transfer.target_id)
+    source, target = _lock_pair(session, transfer.source_id, transfer.target_id)
     if target.balance < transfer.amount:
         raise DomainError("INSUFFICIENT_FUNDS", "target no longer holds the amount")
     target.balance -= transfer.amount

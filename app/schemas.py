@@ -54,3 +54,4 @@ class TransferOut(BaseModel):
 class ErrorOut(BaseModel):
     code: str
     detail: str
+    transfer_id: str | None = None
