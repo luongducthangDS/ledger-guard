@@ -1,0 +1,19 @@
+[project]
+name = "ledger-guard"
+version = "1.0.0"
+description = "Money-transfer API + risk-based test suite (system under test for QA practice)"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = [
+    "concurrency: tests that fire parallel requests against Postgres",
+    "contract: OpenAPI fuzzing with Schemathesis",
+]
+
+[tool.mutmut]
+paths_to_mutate = ["app/services.py", "app/schemas.py"]
+tests_dir = ["tests/"]
+pytest_add_cli_args = ["-p", "no:randomly", "-x", "-m", "not concurrency and not contract"]
+also_copy = ["app/", "tests/"]
