@@ -1,0 +1,15 @@
+# Local Postgres for running the API and the test suite.
+#   docker compose up -d
+#   (databases "ledger" for the API and "ledger_test" for pytest are created by init.sql)
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports: ["5432:5432"]
+    volumes:
+      - ./perf/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      retries: 10

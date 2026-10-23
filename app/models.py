@@ -2,7 +2,7 @@ import enum
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import BigInteger, CheckConstraint, DateTime, Enum, ForeignKey, String
+from sqlalchemy import BigInteger, CheckConstraint, DateTime, Enum, ForeignKey, Index, String, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.config import DEFAULT_DAILY_LIMIT_VND
@@ -52,4 +52,9 @@ class Transfer(Base):
     failure_reason: Mapped[str | None] = mapped_column(String(40), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
 
-    __table_args__ = (CheckConstraint("amount > 0", name="ck_transfer_amount_positive"),)
+    __table_args__ = (
+        CheckConstraint("amount > 0", name="ck_transfer_amount_positive"),
+        # serves the daily-limit query: completed outgoing transfers of one account since midnight
+        Index("ix_transfers_source_completed_created", "source_id", "created_at",
+              postgresql_where=text("status = 'COMPLETED'")),
+    )

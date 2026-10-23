@@ -1,0 +1,70 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 19 * * *"   # nightly 02:00 Vietnam time: mutation testing
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ledger_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/ledger_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -r requirements-dev.txt
+
+      - name: Unit, rule, state and property tests + concurrency (real Postgres)
+        run: pytest --cov=app --cov-branch --cov-report=term --cov-fail-under=95 --junitxml=reports/junit.xml
+
+      - name: Start API for black-box checks
+        run: |
+          uvicorn app.main:app --port 8000 &
+          for i in $(seq 30); do curl -sf localhost:8000/health && break; sleep 1; done
+
+      - name: OpenAPI contract fuzzing (Schemathesis)
+        # positive_data_acceptance (ST202) is excluded on purpose: the rule
+        # "source_id != target_id" cannot be expressed in JSON Schema; it is covered by pytest instead.
+        run: >
+          schemathesis run http://localhost:8000/openapi.json --checks all
+          --exclude-checks positive_data_acceptance --max-examples 50
+          -H "Idempotency-Key: ci-schemathesis-key"
+
+      - name: Performance smoke gate (k6, fails the build if SLO is breached)
+        uses: grafana/setup-k6-action@v1
+      - run: k6 run -e RATE=20 -e ACCOUNTS=200 -e DURATION=20s perf/transfer_load.js
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: { name: test-reports, path: reports/ }
+
+  mutation:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_PASSWORD: postgres, POSTGRES_DB: ledger_test }
+        ports: ["5432:5432"]
+        options: --health-cmd "pg_isready -U postgres" --health-interval 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/ledger_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -r requirements-dev.txt
+      - run: mutmut run --max-children 2 || true
+      - run: mutmut results
