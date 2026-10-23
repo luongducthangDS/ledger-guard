@@ -7,3 +7,6 @@ htmlcov/
 reports/
 *.pyc
 .venv/
+CV/
+*.pdf
+*.tex
